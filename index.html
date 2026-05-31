@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panyasit Interactive Simulations | สื่อการสอนวิทยาศาสตร์และคณิตศาสตร์</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #3b82f6;
+            --accent: #f59e0b;
+            --bg-color: #f8fafc;
+            --text-main: #334155;
+            --text-light: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* ส่วนหัวเว็บไซต์ (Header) */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo span { color: var(--secondary); }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--secondary); }
+
+        /* ส่วนแบนเนอร์ต้อนรับ (Hero Section) */
+        .hero {
+            background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
+            color: white;
+            text-align: center;
+            padding: 4rem 1rem;
+        }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .hero p { font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem auto; opacity: 0.9; }
+        .search-bar {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            gap: 10px;
+        }
+        .search-bar input {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            outline: none;
+        }
+        .search-bar button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .search-bar button:hover { background-color: #d97706; }
+
+        /* ส่วนเนื้อหาหลัก */
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* เมนูตัวกรองวิชา (Filter) */
+        .filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 2rem;
+        }
+        .filter-btn {
+            background-color: white;
+            border: 2px solid #e2e8f0;
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .filter-btn:hover { border-color: var(--secondary); color: var(--secondary); }
+        .filter-btn.active {
+            background-color: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        /* ตารางแสดงสื่อจำลอง (Grid) */
+        .sim-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        /* การ์ดสื่อจำลอง (Sim Card) */
+        .sim-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e2e8f0;
+        }
+        .sim-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* รูปภาพจำลองของการ์ด (ใช้สีและ Emoji แทนภาพชั่วคราว) */
+        .card-img {
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+        /* สีพื้นหลังของแต่ละวิชา */
+        .bg-physics { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
+        .bg-chemistry { background: linear-gradient(135deg, #f472b6, #ec4899); }
+        .bg-biology { background: linear-gradient(135deg, #34d399, #10b981); }
+        .bg-math { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+        
+        .card-content { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-title { font-size: 1.2rem; color: var(--primary); font-weight: 600; margin-bottom: 5px; }
+        .card-subject { font-size: 0.9rem; font-weight: 500; margin-bottom: 10px; }
+        .subject-physics { color: #8b5cf6; }
+        .subject-chemistry { color: #ec4899; }
+        .subject-biology { color: #10b981; }
+        .subject-math { color: #3b82f6; }
+        
+        .card-desc { font-size: 0.9rem; color: var(--text-light); flex-grow: 1; }
+
+        /* ส่วนท้าย (Footer) */
+        footer {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 4rem;
+        }
+        footer p { opacity: 0.8; font-size: 0.9rem; }
+
+        /* การรองรับหน้าจอมือถือ */
+        @media (max-width: 600px) {
+            header { flex-direction: column; gap: 10px; }
+            .hero h1 { font-size: 2rem; }
+            .search-bar { flex-direction: column; }
+            .search-bar button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">🧬 <span>Panyasit</span> Sims</div>
+        <nav class="nav-links">
+            <a href="#">หน้าแรก</a>
+            <a href="#">เกี่ยวกับผู้สร้าง</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>สื่อการทดลองเสมือนจริง</h1>
+        <p>เรียนรู้วิทยาศาสตร์และคณิตศาสตร์อย่างสนุกสนาน ผ่านการลงมือทำด้วยตนเองในห้องแล็บเสมือนจริง (Interactive Virtual Labs)</p>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="ค้นหาสื่อการสอน (เช่น น้ำ, ไฟฟ้า, เศษส่วน)...">
+            <button onclick="searchSims()">ค้นหา</button>
+        </div>
+    </section>
+
+    <div class="main-container">
+        
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">ทั้งหมด (All)</button>
+            <button class="filter-btn" data-filter="physics">ฟิสิกส์ (Physics)</button>
+            <button class="filter-btn" data-filter="chemistry">เคมี (Chemistry)</button>
+            <button class="filter-btn" data-filter="biology">ชีววิทยา (Biology)</button>
+            <button class="filter-btn" data-filter="math">คณิตศาสตร์ (Math)</button>
+        </div>
+
+        <div class="sim-grid" id="simGrid">
+            
+            <a href="https://panyasitta.github.io/virtual-lab-science/" target="_blank" class="sim-card" data-category="physics chemistry">
+                <div class="card-img bg-physics">🧊💧💨</div>
+                <div class="card-content">
+                    <div class="card-subject subject-physics">ฟิสิกส์ / เคมี</div>
+                    <div class="card-title">การเปลี่ยนสถานะของน้ำ</div>
+                    <div class="card-desc">ศึกษาอุณหภูมิและความร้อนแฝงจำเพาะขณะที่น้ำแข็งหลอมเหลวและกลายเป็นไอ พร้อมกราฟแสดงผลแบบเรียลไทม์</div>
+                </div>
+            </a>
+
+            <a href="#" class="sim-card" data-category="physics">
+                <div class="card-img bg-physics">⚡💡</div>
+                <div class="card-content">
+                    <div class="card-subject subject-physics">ฟิสิกส์</div>
+                    <div class="card-title">กฎของโอห์ม (Ohm's Law)</div>
+                    <div class="card-desc">ทดลองปรับค่าความต่างศักย์ (V) และความต้านทาน (R) เพื่อสังเกตผลกระทบต่อกระแสไฟฟ้า (I) ในวงจร</div>
+                </div>
+            </a>
+
+            <a href="#" class="sim-card" data-category="biology">
+                <div class="card-img bg-biology">🌿☀️</div>
+                <div class="card-content">
+                    <div class="card-subject subject-biology">ชีววิทยา</div>
+                    <div class="card-title">การสังเคราะห์ด้วยแสง</div>
+                    <div class="card-desc">จำลองปัจจัยที่มีผลต่ออัตราการสังเคราะห์ด้วยแสง เช่น ความเข้มแสง ปริมาณคาร์บอนไดออกไซด์ และอุณหภูมิ</div>
+                </div>
+            </a>
+
+            <a href="#" class="sim-card" data-category="chemistry">
+                <div class="card-img bg-chemistry">⚖️🧪</div>
+                <div class="card-content">
+                    <div class="card-subject subject-chemistry">เคมี</div>
+                    <div class="card-title">การดุลสมการเคมี</div>
+                    <div class="card-desc">ฝึกสมองกับการเติมตัวเลขสัมประสิทธิ์เพื่อดุลสมการเคมี พร้อมตาชั่งจำลองที่ช่วยให้เห็นภาพจำนวนอะตอมอย่างชัดเจน</div>
+                </div>
+            </a>
+
+            <a href="#" class="sim-card" data-category="math">
+                <div class="card-img bg-math">🍕➗</div>
+                <div class="card-content">
+                    <div class="card-subject subject-math">คณิตศาสตร์</div>
+                    <div class="card-title">แล็บเศษส่วน (Fractions)</div>
+                    <div class="card-desc">เรียนรู้ความหมายของเศษส่วน การเปรียบเทียบ และการบวกเศษส่วนผ่านภาพจำลองพิซซ่าและบล็อกสี</div>
+                </div>
+            </a>
+            
+            <a href="#" class="sim-card" data-category="physics">
+                <div class="card-img bg-physics">⚖️📦</div>
+                <div class="card-content">
+                    <div class="card-subject subject-physics">ฟิสิกส์</div>
+                    <div class="card-title">โมเมนต์และคานสมดุล</div>
+                    <div class="card-desc">จัดวางมวลขนาดต่างๆ บนคานเพื่อเรียนรู้เรื่องจุดหมุน ระยะทาง และโมเมนต์ของแรง เพื่อหาจุดสมดุล</div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="logo" style="justify-content: center; margin-bottom: 10px;">🧬 <span>Panyasit</span> Sims</div>
+        <p>พัฒนาโดย นายปัญญสิษฐ พรมขำ (ครูปัญญสิษฐ) | สร้างสรรค์เพื่อการศึกษาไทย</p>
+        <p style="margin-top: 10px; font-size: 0.8rem;">แรงบันดาลใจจาก PhET Interactive Simulations</p>
+    </footer>
+
+    <script>
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const simCards = document.querySelectorAll('.sim-card');
+        const searchInput = document.getElementById('searchInput');
+
+        // ระบบปุ่มกรองหมวดหมู่
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // เอา class active ออกจากปุ่มอื่น แล้วใส่ปุ่มที่กด
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filterValue = btn.getAttribute('data-filter');
+
+                simCards.forEach(card => {
+                    if (filterValue === 'all' || card.getAttribute('data-category').includes(filterValue)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // ล้างช่องค้นหาเมื่อกดปุ่มกรอง
+                searchInput.value = '';
+            });
+        });
+
+        // ระบบค้นหาจากข้อความ
+        function searchSims() {
+            const query = searchInput.value.toLowerCase();
+            
+            // รีเซ็ตปุ่มกรองให้กลับไปที่ 'ทั้งหมด'
+            filterBtns.forEach(b => b.classList.remove('active'));
+            document.querySelector('[data-filter="all"]').classList.add('active');
+
+            simCards.forEach(card => {
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                const desc = card.querySelector('.card-desc').textContent.toLowerCase();
+                
+                if (title.includes(query) || desc.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // ค้นหาอัตโนมัติเมื่อพิมพ์
+        searchInput.addEventListener('input', searchSims);
+    </script>
+</body>
+</html>
