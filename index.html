@@ -4,214 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panyasit Interactive Simulations | สื่อการสอน</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Prompt', 'sans-serif'] },
+                    colors: {
+                        physics: { light: '#a78bfa', dark: '#8b5cf6' },
+                        chemistry: { light: '#f472b6', dark: '#ec4899' },
+                        biology: { light: '#34d399', dark: '#10b981' }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --primary: #0f172a; --secondary: #3b82f6; --accent: #f59e0b;
-            --bg-color: #f8fafc; --text-main: #334155; --text-light: #64748b;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Prompt', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; }
-
-        header { background-color: var(--primary); color: white; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .logo { font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .logo span { color: var(--secondary); }
-        
-        .hero { background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%); color: white; text-align: center; padding: 4rem 1rem; }
-        .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
-        .hero p { font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem auto; opacity: 0.9; }
-        .search-bar { max-width: 500px; margin: 0 auto; display: flex; gap: 10px; }
-        .search-bar input { flex: 1; padding: 12px 20px; border: none; border-radius: 30px; font-size: 1rem; outline: none; }
-
-        .main-container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; min-height: 40vh; }
-        .filters { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 2rem; }
-        .filter-btn { background-color: white; border: 2px solid #e2e8f0; color: var(--text-main); padding: 8px 16px; border-radius: 20px; font-weight: 500; cursor: pointer; transition: all 0.3s; }
-        .filter-btn:hover { border-color: var(--secondary); color: var(--secondary); }
-        .filter-btn.active { background-color: var(--secondary); color: white; border-color: var(--secondary); }
-
-        .sim-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .sim-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.3s, box-shadow 0.3s; text-decoration: none; color: inherit; display: flex; flex-direction: column; border: 1px solid #e2e8f0; }
-        .sim-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
-        
-        .card-img { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 4rem; }
-        .bg-physics { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
-        .bg-chemistry { background: linear-gradient(135deg, #f472b6, #ec4899); }
-        .bg-biology { background: linear-gradient(135deg, #34d399, #10b981); }
-        .bg-math { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
-        
-        .card-content { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
-        .card-title { font-size: 1.2rem; color: var(--primary); font-weight: 600; margin-bottom: 5px; }
-        .card-subject { font-size: 0.9rem; font-weight: 500; margin-bottom: 10px; }
-        .text-physics { color: #8b5cf6; }
-        .text-chemistry { color: #ec4899; }
-        .text-biology { color: #10b981; }
-        .text-math { color: #3b82f6; }
-        .card-desc { font-size: 0.9rem; color: var(--text-light); flex-grow: 1; }
-
-        footer { background-color: var(--primary); color: white; text-align: center; padding: 2rem 1rem; margin-top: 4rem; }
-        
-        /* กรณีค้นหาไม่เจอ */
-        .no-result { grid-column: 1 / -1; text-align: center; color: var(--text-light); padding: 2rem; font-size: 1.1rem; }
-
-        @media (max-width: 600px) {
-            header { flex-direction: column; gap: 10px; }
-            .hero h1 { font-size: 2rem; }
-            .search-bar { flex-direction: column; }
-        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 antialiased flex flex-col min-h-screen">
 
-    <header>
-        <div class="logo">🧬 <span>Panyasit</span> Sims</div>
+    <!-- Header -->
+    <header class="bg-slate-900 text-white py-4 px-6 md:px-12 flex justify-between items-center sticky top-0 z-50 shadow-md">
+        <div class="text-2xl font-bold flex items-center gap-2 tracking-wide">
+            🧬 <span class="text-blue-400">Panyasit</span> Sims
+        </div>
     </header>
 
-    <section class="hero">
-        <h1>สื่อการทดลองเสมือนจริง</h1>
-        <p>เรียนรู้วิทยาศาสตร์และคณิตศาสตร์อย่างสนุกสนาน ผ่านการลงมือทำด้วยตนเอง</p>
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="ค้นหาสื่อการสอน (เช่น น้ำ, ไฟฟ้า)...">
+    <!-- Hero -->
+    <section class="bg-gradient-to-br from-slate-800 to-blue-600 text-white text-center py-16 px-4">
+        <h1 class="text-3xl md:text-5xl font-bold mb-4 drop-shadow-md">สื่อการทดลองเสมือนจริง</h1>
+        <p class="text-lg md:text-xl max-w-2xl mx-auto mb-8 text-blue-100 font-light">
+            เรียนรู้วิทยาศาสตร์และคณิตศาสตร์ผ่านการลงมือทำด้วยตนเอง
+        </p>
+        <div class="max-w-xl mx-auto relative">
+            <input type="text" id="searchInput" class="w-full pl-6 pr-4 py-4 rounded-full text-slate-800 font-medium shadow-lg focus:outline-none" placeholder="ค้นหาสื่อการสอน...">
         </div>
     </section>
 
-    <div class="main-container">
-        
-        <div class="filters">
-            <button class="filter-btn active" data-filter="all">ทั้งหมด</button>
-            <button class="filter-btn" data-filter="physics">ฟิสิกส์</button>
-            <button class="filter-btn" data-filter="chemistry">เคมี</button>
-            <button class="filter-btn" data-filter="biology">ชีววิทยา</button>
-            <button class="filter-btn" data-filter="math">คณิตศาสตร์</button>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-12 flex-grow w-full">
+        <div class="flex flex-wrap justify-center gap-3 mb-10" id="filterContainer">
+            <button class="filter-btn active bg-blue-500 text-white px-6 py-2 rounded-full font-medium shadow-md" data-filter="all">ทั้งหมด</button>
+            <button class="filter-btn bg-white text-slate-600 border border-slate-200 px-6 py-2 rounded-full font-medium hover:bg-slate-100" data-filter="physics">ฟิสิกส์</button>
+            <button class="filter-btn bg-white text-slate-600 border border-slate-200 px-6 py-2 rounded-full font-medium hover:bg-slate-100" data-filter="chemistry">เคมี</button>
+            <button class="filter-btn bg-white text-slate-600 border border-slate-200 px-6 py-2 rounded-full font-medium hover:bg-slate-100" data-filter="biology">ชีววิทยา</button>
         </div>
 
-        <div class="sim-grid" id="simGrid"></div>
-    </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="simGrid"></div>
+    </main>
 
-    <footer>
-        <div class="logo" style="justify-content: center; margin-bottom: 10px;">🧬 <span>Panyasit</span> Sims</div>
-        <p>พัฒนาโดย นายปัญญสิษฐ พรมขำ (ครูปัญญสิษฐ)</p>
+    <!-- Updated Footer -->
+    <footer class="bg-slate-900 text-slate-300 text-center py-10 px-4 mt-auto border-t-4 border-blue-500">
+        <p class="text-sm font-medium text-white mb-2">&copy; 2026 Panyasit Interactive Simulations. สงวนลิขสิทธิ์</p>
+        <p class="font-light text-sm">พัฒนาโดย นายปัญญสิษฐ พรมขำ | โรงเรียนทุ่งเสลี่ยมชนูปถัมภ์</p>
     </footer>
 
     <script>
-        // =========================================================
-        // 💾 ฐานข้อมูลสื่อการสอน: เพิ่ม-ลบ-แก้ไข การทดลองได้ที่นี่!
-        // =========================================================
         const labDatabase = [
             {
-                title: "ระยะทางและระยะห่างระหว่างสองตำแหน่งแตกต่างกันอย่างไร",
-                subjectValue: "Science Physics", // หมวดหมู่สำหรับการกรอง (ใส่ได้หลายค่า เว้นวรรคเอา)
-                subjectDisplay: "วิทยาศาสตร์ / ฟิสิกส์", // ข้อความที่จะโชว์ในการ์ด
-                colorType: "physics", // ธีมสี: physics, chemistry, biology, math
-                icon: "🛣️ 👣 📏",
-                description: "สื่อการสอนแบบ Interactive ที่ช่วยให้นักเรียนจำแนกความแตกต่างระหว่าง ระยะทาง (ความยาวตามแนวที่เคลื่อนที่) และ การกระจัด (ระยะห่างที่วัดเป็นเส้นตรงระหว่างจุดเริ่มต้นและจุดสิ้นสุด) ได้อย่างแม่นยำ พร้อมระบบจำลองสถานการณ์และการคำนวณที่ช่วยเสริมสร้างทักษะการคิดวิเคราะห์เชิงฟิสิกส์",
+                title: "กิจกรรม 4.2 ระยะทางและการกระจัด",
+                subjectValue: "physics", 
+                subjectDisplay: "ฟิสิกส์", 
+                colorType: "physics", 
+                icon: "🛣️",
+                description: "เรียนรู้ความแตกต่างระหว่างระยะทางและการกระจัดผ่านการจำลองเส้นทาง",
                 link: "https://panyasitta.github.io/distance_lab_M2/"
             },
             {
-                title: "การเปลี่ยนสถานะของน้ำ",
-                subjectValue: "physics chemistry", // หมวดหมู่สำหรับการกรอง (ใส่ได้หลายค่า เว้นวรรคเอา)
-                subjectDisplay: "ฟิสิกส์ / เคมี", // ข้อความที่จะโชว์ในการ์ด
-                colorType: "physics", // ธีมสี: physics, chemistry, biology, math
-                icon: "🧊💧💨",
-                description: "ศึกษาอุณหภูมิและความร้อนแฝงจำเพาะขณะที่น้ำแข็งหลอมเหลวและกลายเป็นไอ พร้อมกราฟแสดงผลเรียลไทม์",
+                title: "กิจกรรม 4.3 อัตราเร็วและความเร็ว",
+                subjectValue: "physics", 
+                subjectDisplay: "ฟิสิกส์", 
+                colorType: "physics", 
+                icon: "🏃‍♂️",
+                description: "จำลองการเดินและคำนวณอัตราเร็ว/ความเร็ว พร้อมกระดานวาดเวกเตอร์และ AI ตรวจคำตอบ",
+                link: "https://panyasitta.github.io/science_m2_act4_3/"
+            },
+            {
+                title: "การเปลี่ยนสถานะของน้ำ (ความร้อน)",
+                subjectValue: "physics chemistry",
+                subjectDisplay: "ฟิสิกส์ / เคมี", 
+                colorType: "chemistry", 
+                icon: "🧊",
+                description: "กิจกรรมเรื่องความร้อน: ศึกษาการเปลี่ยนสถานะจากของแข็งไปเป็นของเหลวและก๊าซพร้อมกราฟอุณหภูมิ",
                 link: "https://panyasitta.github.io/virtual-lab-science/"
-            },
-            {
-                title: "กฎของโอห์ม (Ohm's Law)",
-                subjectValue: "physics",
-                subjectDisplay: "ฟิสิกส์",
-                colorType: "physics",
-                icon: "⚡💡",
-                description: "ทดลองปรับค่าความต่างศักย์ (V) และความต้านทาน (R) เพื่อสังเกตผลกระทบต่อกระแสไฟฟ้า (I)",
-                link: "#" // ลิงก์ที่ยังไม่ได้สร้าง ใส่ # ไว้ก่อน
-            },
-            {
-                title: "การดุลสมการเคมี",
-                subjectValue: "chemistry",
-                subjectDisplay: "เคมี",
-                colorType: "chemistry",
-                icon: "⚖️🧪",
-                description: "ฝึกสมองกับการเติมตัวเลขสัมประสิทธิ์เพื่อดุลสมการเคมี พร้อมตาชั่งจำลองจำนวนอะตอม",
-                link: "#"
-            },
-            {
-                title: "การสังเคราะห์ด้วยแสง",
-                subjectValue: "biology",
-                subjectDisplay: "ชีววิทยา",
-                colorType: "biology",
-                icon: "🌿☀️",
-                description: "จำลองปัจจัยที่มีผลต่ออัตราการสังเคราะห์ด้วยแสง เช่น ความเข้มแสง และอุณหภูมิ",
-                link: "#"
             }
-            // 💡 ต้องการเพิ่มสื่อใหม่? ให้ใส่ลูกน้ำ (,) ด้านบน แล้วคัดลอกบล็อกปีกกามาวางต่อได้เลย!
         ];
-        // =========================================================
 
         const grid = document.getElementById('simGrid');
         const filterBtns = document.querySelectorAll('.filter-btn');
         const searchInput = document.getElementById('searchInput');
 
-        // ฟังก์ชันสร้างการ์ดทั้งหมดจากฐานข้อมูล
-        function renderCards(dataToRender) {
-            grid.innerHTML = ''; // ล้างค่าเดิม
-            
-            if(dataToRender.length === 0) {
-                grid.innerHTML = '<div class="no-result">🔍 ไม่พบสื่อการสอนที่คุณค้นหา ลองพิมพ์คำอื่นดูนะครับ</div>';
-                return;
-            }
-
-            dataToRender.forEach(lab => {
-                const cardHTML = `
-                    <a href="${lab.link}" target="${lab.link === '#' ? '_self' : '_blank'}" class="sim-card" data-category="${lab.subjectValue}">
-                        <div class="card-img bg-${lab.colorType}">${lab.icon}</div>
-                        <div class="card-content">
-                            <div class="card-subject text-${lab.colorType}">${lab.subjectDisplay}</div>
-                            <div class="card-title">${lab.title}</div>
-                            <div class="card-desc">${lab.description}</div>
-                        </div>
-                    </a>
-                `;
-                grid.innerHTML += cardHTML;
-            });
+        function renderCards(data) {
+            grid.innerHTML = data.map(lab => `
+                <a href="${lab.link}" target="_blank" class="group bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-xl transition-all">
+                    <div class="text-5xl mb-4">${lab.icon}</div>
+                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-blue-100 text-blue-700 uppercase">${lab.subjectDisplay}</span>
+                    <h3 class="text-xl font-bold text-slate-800 mt-2 mb-2">${lab.title}</h3>
+                    <p class="text-slate-500 text-sm">${lab.description}</p>
+                </a>
+            `).join('');
         }
 
-        // โหลดข้อมูลทั้งหมดตอนเปิดเว็บครั้งแรก
         renderCards(labDatabase);
 
-        // ระบบกรองด้วยปุ่ม (Filter)
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                // เปลี่ยนสีปุ่ม
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                searchInput.value = ''; // เคลียร์ช่องค้นหา
-
-                const filterValue = btn.getAttribute('data-filter');
-                
-                if(filterValue === 'all') {
-                    renderCards(labDatabase);
-                } else {
-                    const filteredData = labDatabase.filter(lab => lab.subjectValue.includes(filterValue));
-                    renderCards(filteredData);
-                }
+                filterBtns.forEach(b => b.className = 'filter-btn bg-white text-slate-600 border border-slate-200 px-6 py-2 rounded-full font-medium hover:bg-slate-100');
+                btn.className = 'filter-btn active bg-blue-500 text-white px-6 py-2 rounded-full font-medium shadow-md';
+                const f = btn.getAttribute('data-filter');
+                renderCards(f === 'all' ? labDatabase : labDatabase.filter(l => l.subjectValue.includes(f)));
             });
         });
 
-        // ระบบค้นหาจากข้อความ (Search)
         searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            
-            // รีเซ็ตปุ่มกรองเป็น 'ทั้งหมด'
-            filterBtns.forEach(b => b.classList.remove('active'));
-            document.querySelector('[data-filter="all"]').classList.add('active');
-
-            const searchedData = labDatabase.filter(lab => 
-                lab.title.toLowerCase().includes(query) || 
-                lab.description.toLowerCase().includes(query)
-            );
-            
-            renderCards(searchedData);
+            const q = e.target.value.toLowerCase();
+            renderCards(labDatabase.filter(l => l.title.toLowerCase().includes(q) || l.description.toLowerCase().includes(q)));
         });
-
     </script>
 </body>
 </html>
